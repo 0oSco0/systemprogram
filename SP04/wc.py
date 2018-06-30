@@ -5,26 +5,19 @@ Created on Sat Jun 23 10:14:07 2018
 @author: Sc
 """
 
-# 第一个注释
-# 第二个注释
- 
-'''
-第三注释
-第四注释
-'''
- 
-"""
-第五注释
-第六注释
-"""
-
 import sys
 
-if len(sys.argv) > 1:
-    f = open(sys.argv[1], "rU",encoding='utf-8') 
+argc = len(sys.argv)
+if argc == 1:
+    f = sys.stdin
+    #f = open("test.txt","rU",encoding='utf-8')
+elif argc == 2:
+    try:
+        f = open(sys.argv[1],"rU")
+    except IOError:
+        sys.exit("wc: %s: No such file or directory" % (sys.argv[1]))
 else:
-    f = open("test.txt","rU",encoding='utf-8')
-    #f = sys.stdin
+    sys.exit("usage: wc [file]")
     
 """
 文字	意味
@@ -41,6 +34,20 @@ else:
 d = {}    
 for s in f:
     #print(s,file=sys.stdout, end='')
+    s = s.lower()
+    s = s.replace(',', '')
+    s = s.replace('.', '')
+    s = s.replace('-', '')
+    s = s.replace('_', '')
+    s = s.replace(';', '')
+    s = s.replace(':', '')
+    s = s.replace('"', '')
+    s = s.replace("'", '')
+    s = s.replace('?', '')
+    s = s.replace('!', '')
+    s = s.replace('(', '')
+    s = s.replace(')', '')
+    s = s.replace('/', '')
     words = s.split()
     #print(words)
     for w in words:
@@ -49,7 +56,9 @@ for s in f:
         else:
             d[w] = 1
     #print(d)
+    
 f.close()
+print("Number of words:", len(words))
 
 def foo(s):
     return d[s]
@@ -57,7 +66,8 @@ def foo(s):
 sorted_keys = sorted(d.keys(), key=foo, reverse=True)#降順
 
 #sorted_keys = sorted(d.keys(), key = lambda x: d[x], reverse = True)
-
+#print("Number of words:", len(words))
+print("Top 20 frequent words:")
 i = 0
 for k in sorted_keys:
     if i == 20:
